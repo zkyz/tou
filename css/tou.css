@@ -1,0 +1,38 @@
+.tou {
+    position: relative;
+}
+.tou-item {
+    background-color: #fff;
+    border: 2px solid transparent;
+    cursor: move;
+    padding: 7px;
+    position: relative;
+}
+.tou-item.selected,
+.tou-item:hover {
+    border-color: #369;
+}
+
+.tou-item-moving {
+    opacity: .3;
+    position: fixed;
+    z-index: 1;
+}
+
+.tou-item.tou-item-pseudo {
+    background-color: #eee;
+    border-color: #369;
+    opacity: .3;
+}
+.tou-item.tou-item-drop-top {
+    border-top: 2px dashed #369;
+}
+.tou-item.tou-item-drop-bottom {
+    border-bottom: 2px dashed #369;
+}
+.tou-item>* {
+    outline: none;
+}
+.tou-item>.tou-item-text {
+    cursor: text;
+}
