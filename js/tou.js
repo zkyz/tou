@@ -13,6 +13,10 @@ function elementOffset(el) {
 	'use strict'
 
 	const tou = document.querySelector('.tou')
+	const pseudo = document.createElement('div')
+	pseudo.classList.add('tou-item-pseudo')
+	tou.appendChild(pseudo)
+
 	const event = {
 		move(e) {
 			target.style.top = (e.clientY - target.position.init) + 'px'
@@ -27,7 +31,14 @@ function elementOffset(el) {
 	document.querySelectorAll('.tou-item').forEach(item => {
 		item.addEventListener('dragstart', e => {
 			target = e.target
-			target.classList.add('tou-item-pseudo')
+
+			const _pos = elementOffset(tou)
+			const pos = elementOffset(target)
+			pseudo.top = pos.top - _pos.top
+			pseudo.left = pos.left - _pos.left
+
+			pseudo.style.width = target.offsetWidth + 'px'
+			pseudo.style.height = target.offsetHeight + 'px'
 		})
 		item.addEventListener('dragend', e => {
 			if (droper == null) {
@@ -43,14 +54,19 @@ function elementOffset(el) {
 				droper.parentNode.appendChild(target)
 			}
 
-			target.classList.remove('tou-item-pseudo')
 			target = null
 
 			droper.classList.remove('tou-item-drop-top', 'tou-item-drop-bottom')
 			droper = null
+
+			pseudo.style.display = 'none'
 		})
 		item.addEventListener('dragover', e => {
 			droper && droper.classList.remove('tou-item-drop-top', 'tou-item-drop-bottom')
+
+			pseudo.style.display = 'block'
+			pseudo.style.top = pseudo.top + 'px'
+			pseudo.style.left = pseudo.left + 'px'
 
 			let _item = e.target
 			while (_item && !_item.classList.contains('tou-item')) {
