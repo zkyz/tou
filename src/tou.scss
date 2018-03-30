@@ -22,11 +22,11 @@ body {
 }
 
 .tou-list {
-  margin: 6px;
+  margin: 8px 0;
   position: relative;
 
   & .mdl-grid {
-    padding: 0;
+    padding: 0 10px;
   }
 
   & .mdl-cell {
@@ -34,10 +34,8 @@ body {
   }
 }
 
-.tou {
+.tou-item {
   position: relative;
-  transform: none;
-  transition: transform .2s;
 
   &:hover {
     box-shadow:
@@ -46,19 +44,29 @@ body {
             0 3px 5px -1px rgba(0, 0, 0, 0.2);
     z-index: 1;
 
-    &>.tou-move-handle {
+    &>.tou-item-move-handle {
       background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2IiBoZWlnaHQ9IjYiPjxnPjxyZWN0IGZpbGw9Im5vbmUiIGlkPSJjYW52YXNfYmFja2dyb3VuZCIgaGVpZ2h0PSI2IiB3aWR0aD0iNiIgeT0iMCIgeD0iMCIvPjwvZz48Zz48cmVjdCBvcGFjaXR5PSIwLjMiIGlkPSJzdmdfNCIgaGVpZ2h0PSIzIiB3aWR0aD0iMyIgZmlsbD0iIzAwMCIvPjwvZz48L3N2Zz4=);
       background-size: 3px;
       cursor: move;
-      height: 9px;
-      left: 0;
+      height: 70%;
+      left: 5px;
       position: absolute;
-      top: 0;
-      width: 9px;
+      top: 15%;
+      width: 6px;
     }
   }
 
-  & [contenteditable] {
+  &.ui-sortable-helper {
+    background-color: #fff;
+  }
+}
+
+.tou {
+  position: relative;
+  transform: none;
+  transition: transform .2s;
+
+  &[contenteditable] {
     outline: none;
   }
 }
@@ -80,14 +88,18 @@ body {
     cursor: ew-resize;
     height: 11px;
     position: absolute;
-    top: calc(50% - 6px);
+    top: calc(50% - 8px);
     width: 11px;
 
-    &:nth-child(1) {
-      left: 3px;
+    &-left {
+      left: -8px;
     }
-    &:nth-child(2) {
-      right: 3px;
+    &-right {
+      right: -8px;
     }
   }
+}
+
+.tou-size-helper {
+  border: 1px dashed #ccc;
 }
