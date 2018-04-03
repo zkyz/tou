@@ -5,18 +5,18 @@ import 'jquery-ui/ui/disable-selection'
 import './tou.scss'
 
 (function () {
-  const handle = {
-    move: $('<div class="tou-item-move-handle"/>'),
-    size: {
-      left: $('<div class="tou-size-handle tou-size-handle-left"/>'),
-      right: $('<div class="tou-size-handle tou-size-handle-right"/>')
-    }
-  }
+  const selected = $(`
+    <div class="tou-selected">
+      <div class="tou-size-handle tou-size-handle-left"/>
+      <div class="tou-size-handle tou-size-handle-right"/>
+    </div>
+  `)
 
-  handle.size.left.on('mousedown', function (e) {
+  const leftSizeHandle = $('.tou-size-handle-left', selected)
+  leftSizeHandle.on('mousedown', function (e) {
     const $this = $(this)
 
-    $this.container = $this.closest('.tou-item')
+    $this.container = $this.closest('.tou-group')
     $this.size = $this.parent().width()
     $this.startX = e.pageX
     $this.grid = $this.container.width() / 12
@@ -26,11 +26,9 @@ import './tou.scss'
     $this.container
       .on('mousemove', function (e) {
         const length = Math.round((e.pageX - $this.startX) / $this.grid)
-        const width = $this.size - $this.grid * length
 
         $this.parent().css({
-          left: $this.grid * length,
-          width: width < $this.grid ? $this.grid : width
+          left: 'calc(8.3333333333% * ' + length + ')'
         })
       })
       .on('mouseup', function () {
@@ -39,45 +37,50 @@ import './tou.scss'
       })
   })
 
-  handle.size.right.on('mousedown', function (e) {
+  const rightSizeHandle = $('.tou-size-handle-right', selected)
+  rightSizeHandle.on('mousedown', function (e) {
     const $this = $(this)
 
-    $this.container = $this.closest('.tou-item')
+    $this.list = $this.closest('.tou-list')
+    $this.container = $this.closest('.tou-group')
+    $this.tou = $this.closest('.tou')
+    $this.width = parseInt($this.tou.attr('data-width')) || 12
     $this.size = $this.parent().width()
     $this.startX = e.pageX
     $this.grid = $this.container.width() / 12
 
     $('body').disableSelection()
+    $this.list.addClass('tou-movement')
 
     $this.container
       .on('mousemove', function (e) {
-        const length = $this.size + $this.grid * Math.round((e.pageX - $this.startX) / $this.grid)
-        $this.parent().width(length < $this.grid ? $this.grid : length)
+        const length = $this.width + Math.round((e.pageX - $this.startX) / $this.grid)
+        $this.tou.attr('data-width', length)
       })
       .on('mouseup', function () {
-        $this.container.off()
+        $this.container.off('mousemove mouseup')
+        $this.list.removeClass('tou-movement')
         $('body').enableSelection()
       })
   })
 
   $('.tou')
-    .prop('contenteditable', 'true')
     .on('click', function () {
-      $('.tou-selected').removeClass('tou-selected')
-
-      $(this)
-        .addClass('tou-selected')
-        .append(handle.size.left)
-        .append(handle.size.right)
+      $(this).append(selected)
     })
+    .find('.tou-text')
+    .attr('contenteditable', true)
 
-  $('.tou-item')
-    .append(handle.move.clone())
+  const itemMoveHandler = $('<div class="tou-group-move-handle"/>')
+  $('.tou-group')
+    .on('mouseenter', function () {
+      $(this).append(itemMoveHandler)
+    })
 
   $('.tou-list')
     .sortable({
       revert: true,
       axis: 'y',
-      handle: '.tou-item-move-handle'
+      handle: '.tou-group-move-handle'
     })
 })()
