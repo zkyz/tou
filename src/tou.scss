@@ -51,12 +51,36 @@ body {
       width: calc(8.3333333333% - 8px);
     }
   }
-  &.tou-movement .tou-guideline {
-    display: flex;
+  &.tou-resizing {
+    & .tou-guideline {
+      display: flex;
+    }
   }
-  &.tou-movement .tou {
-    outline: 1px solid #ccc;
+  &.tou-movement {
+    & .tou-guideline {
+      display: flex;
+    }
+
+    & .tou {
+      outline: 1px solid #aaa;
+    }
+
+    & .tou-gap {
+      background-color: rgba(32, 128, 192, .2);
+      outline: 1px solid rgba(64, 128, 192, .5);
+    }
   }
+}
+
+.tou-move-handle {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2IiBoZWlnaHQ9IjYiPjxnPjxyZWN0IGZpbGw9Im5vbmUiIGlkPSJjYW52YXNfYmFja2dyb3VuZCIgaGVpZ2h0PSI2IiB3aWR0aD0iNiIgeT0iMCIgeD0iMCIvPjwvZz48Zz48cmVjdCBvcGFjaXR5PSIwLjMiIGlkPSJzdmdfNCIgaGVpZ2h0PSIzIiB3aWR0aD0iMyIgZmlsbD0iIzAwMCIvPjwvZz48L3N2Zz4=);
+  background-size: 3px;
+  cursor: move;
+  height: 6px;
+  left: calc(50% - 10px);
+  position: absolute;
+  top: 3px;
+  width: 21px;
 }
 
 .tou-group {
@@ -71,12 +95,8 @@ body {
     z-index: 1;
 
     &>.tou-group-move-handle {
-      background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2IiBoZWlnaHQ9IjYiPjxnPjxyZWN0IGZpbGw9Im5vbmUiIGlkPSJjYW52YXNfYmFja2dyb3VuZCIgaGVpZ2h0PSI2IiB3aWR0aD0iNiIgeT0iMCIgeD0iMCIvPjwvZz48Zz48cmVjdCBvcGFjaXR5PSIwLjMiIGlkPSJzdmdfNCIgaGVpZ2h0PSIzIiB3aWR0aD0iMyIgZmlsbD0iIzAwMCIvPjwvZz48L3N2Zz4=);
-      background-size: 3px;
-      cursor: move;
       height: 70%;
       left: 8px;
-      position: absolute;
       top: 15%;
       width: 6px;
     }
@@ -88,6 +108,7 @@ body {
 }
 
 .tou {
+  padding: 16px 0;
   position: relative;
   transform: none;
   transition: transform .2s;
@@ -95,10 +116,13 @@ body {
   & [contenteditable] {
     outline: none;
   }
-}
 
-.tou {
-  padding: 16px 0;
+  &.tou-selected {
+    outline: 3px solid #369;
+  }
+
+  &.tou-gap { margin-left: 8px }
+  &.tou-gap:first-child { margin-left: 0; margin-right: 8px }
 
   &[data-width],
   &[data-width="12"] { width: 100% }
@@ -113,40 +137,34 @@ body {
   &[data-width="3"]  { width: calc(25% - 6px) }
   &[data-width="2"]  { width: calc(16.6666666667% - 7px) }
   &[data-width="1"]  { width: calc(8.3333333333% - 8px) }
-  &[data-width="0"]  { width: auto }
+  &[data-width="0"],
+  &.tou-gap:not([data-width]),
+  &.tou-gap[data-width="0"] {
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+  }
 
   & .tou-text {
     padding: 0 16px;
   }
 }
 
-.tou-selected {
-  border: 3px solid #369;
-  height: calc(100% - 6px);
+.tou-size-handle {
+  background-color: #369;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  cursor: col-resize;
+  cursor: ew-resize;
+  height: 11px;
   position: absolute;
-  top: 0;
-  width: calc(100% - 6px);
+  top: calc(50% - 8px);
+  width: 11px;
 
-  &>.tou-size-handle {
-    background-color: #369;
-    border: 1px solid #fff;
-    border-radius: 50%;
-    cursor: col-resize;
-    cursor: ew-resize;
-    height: 11px;
-    position: absolute;
-    top: calc(50% - 8px);
-    width: 11px;
-
-    &-left {
-      left: -8px;
-    }
-    &-right {
-      right: -8px;
-    }
+  &-left {
+    left: -8px;
   }
-}
-
-.tou-size-helper {
-  border: 1px dashed #ccc;
+  &-right {
+    right: -8px;
+  }
 }
