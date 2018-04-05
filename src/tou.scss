@@ -62,12 +62,16 @@ body {
     }
 
     & .tou {
-      outline: 1px solid #aaa;
+      outline: 1px solid #aaa !important;
+
+      & .tou-size-handle {
+        visibility: hidden;
+      }
     }
 
     & .tou-gap {
-      background-color: rgba(32, 128, 192, .2);
-      outline: 1px solid rgba(64, 128, 192, .5);
+      background-color: rgba(51, 102, 153, 0.2);
+      border: 1px dashed transparent;
     }
   }
 }
@@ -81,6 +85,11 @@ body {
   position: absolute;
   top: 3px;
   width: 21px;
+}
+
+.ui-sortable-helper {
+  background-color: #fff;
+  opacity: .7;
 }
 
 .tou-group {
@@ -101,27 +110,28 @@ body {
       width: 6px;
     }
   }
-
-  &.ui-sortable-helper {
-    background-color: #fff;
-  }
 }
 
 .tou {
   padding: 16px 0;
   position: relative;
-  transform: none;
-  transition: transform .2s;
 
-  & [contenteditable] {
-    outline: none;
+  &:not(.tou-gap):hover {
+    outline: 2px solid #369;
+  }
+  &.tou-selected,
+  &.tou-moving {
+    outline: 3px solid #369 !important;
   }
 
-  &.tou-selected {
-    outline: 3px solid #369;
-  }
+  &.tou-gap {
+    margin-left: 8px;
 
-  &.tou-gap { margin-left: 8px }
+    &.tou-ready-drop {
+      background-color: rgba(51, 102, 153, 0.3);
+      border-color: #369;
+    }
+  }
   &.tou-gap:first-child { margin-left: 0; margin-right: 8px }
 
   &[data-width],
@@ -143,6 +153,10 @@ body {
     width: auto;
     margin-left: 0;
     margin-right: 0;
+  }
+
+  & [contenteditable] {
+    outline: none;
   }
 
   & .tou-text {
