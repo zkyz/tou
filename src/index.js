@@ -60,90 +60,104 @@ import './tou.scss'
     $('body').on('mouseup', sizeHandle.event.end).disableSelection()
   })
 
-  const touMoveHandler = $('<div class="tou-move-handle"/>')
-  touMoveHandler.event = {
+  const touMoveHandle = $('<div class="tou-move-handle"/>')
+  touMoveHandle.event = {
     start: function (e) {
       e.preventDefault()
       e.stopPropagation()
 
-      touMoveHandler.moving = true
-      touMoveHandler.target = $(this).closest('.tou').addClass('tou-moving')
-      touMoveHandler.start = [e.pageX, e.pageY]
+      touMoveHandle.moving = true
+      touMoveHandle.target = $(this).closest('.tou').addClass('tou-moving')
+      touMoveHandle.start = [e.pageX, e.pageY]
 
       $('.tou-gap')
-        .on('mouseenter', touMoveHandler.event.placeholder.enter)
-        .on('mouseleave', touMoveHandler.event.placeholder.leave)
+        .on('mouseenter', touMoveHandle.event.placeholder.enter)
+        .on('mouseleave', touMoveHandle.event.placeholder.leave)
 
       $('body')
-        .on('mousemove', touMoveHandler.event.move)
-        .on('mouseup', touMoveHandler.event.end)
+        .on('mousemove', touMoveHandle.event.move)
+        .on('mouseup', touMoveHandle.event.end)
 
       $('.tou-list').addClass('tou-movement')
     },
     move: function (e) {
       const distance = [
-        e.pageX - touMoveHandler.start[0],
-        e.pageY - touMoveHandler.start[1]
+        e.pageX - touMoveHandle.start[0],
+        e.pageY - touMoveHandle.start[1]
       ]
-      touMoveHandler.target.css('transform', `translate(${distance[0]}px, ${distance[1]}px) scale(.5, .5) rotate(-5deg)`)
+      touMoveHandle.target.css('transform', `translate(${distance[0]}px, ${distance[1]}px) scale(.5, .5) rotate(-5deg)`)
     },
     placeholder: {
       enter: function () {
-        touMoveHandler.destination = $(this).addClass('tou-ready-drop')
+        const $this = $(this)
+        if (parseInt($this.attr('data-width'))) {
+          touMoveHandle.destination = $(this).addClass('tou-ready-drop')
+        }
       },
       leave: function () {
         $(this).removeClass('tou-ready-drop')
-        touMoveHandler.destination = null
+        touMoveHandle.destination = null
       }
     },
     end: function () {
-      touMoveHandler.moving = false
+      touMoveHandle.moving = false
 
-      if (touMoveHandler.destination) {
-        const dataWidth = touMoveHandler.destination.attr('data-width')
+      if (touMoveHandle.destination) {
+        const dataWidth = touMoveHandle.destination.attr('data-width')
+        const touGroup = touMoveHandle.target.closest('.tou-group')
+        const touGapPrev = touMoveHandle.target.prev('.tou-gap')
+        const touGapNext = touMoveHandle.target.next('.tou-gap')
 
-        touMoveHandler.destination
+        touMoveHandle.destination
           .removeAttr('data-width')
           .removeClass('tou-ready-drop')
-          .before(touMoveHandler.target)
+          .before(touMoveHandle.target)
 
-        touMoveHandler.target
+        touMoveHandle.target
           .removeClass('tou-moving')
           .css({
             'transition': 'none',
             'transform': 'none'
           })
           .attr('data-width', dataWidth)
-          .before('<div class="tou tou-gap"/>')
+          .before('<div class="tou tou-gap" id="x"/>')
+
+        if (!touGroup.find('.tou:not(.tou-gap)').length) {
+          touGroup.remove()
+        } else {
+          touGapPrev.remove()
+          touGapNext.attr('data-width',
+            parseInt(touMoveHandle.target.next('.tou-gap').attr('data-width') || 0) + parseInt(touMoveHandle.target.attr('data-width')))
+        }
       } else {
-        touMoveHandler.target
+        touMoveHandle.target
           .removeClass('tou-moving')
           .css({
             'transition': 'transform .4s',
             'transform': 'none'
           })
 
-        setTimeout(() => touMoveHandler.target.css('transition', 'none'), 500)
+        setTimeout(() => touMoveHandle.target.css('transition', 'none'), 500)
       }
 
       $('.tou-gap')
-        .off('mouseenter', touMoveHandler.event.placeholder.enter)
-        .off('mouseleave', touMoveHandler.event.placeholder.leave)
+        .off('mouseenter', touMoveHandle.event.placeholder.enter)
+        .off('mouseleave', touMoveHandle.event.placeholder.leave)
 
       $('body')
-        .off('mousemove', touMoveHandler.event.move)
-        .off('mouseup', touMoveHandler.event.end)
+        .off('mousemove', touMoveHandle.event.move)
+        .off('mouseup', touMoveHandle.event.end)
 
       $('.tou-list').removeClass('tou-movement')
     }
   }
 
-  touMoveHandler.on('mousedown', touMoveHandler.event.start)
+  touMoveHandle.on('mousedown', touMoveHandle.event.start)
 
   $('.tou')
     .on('mouseenter', function () {
-      if (!touMoveHandler.moving) {
-        $(this).append(touMoveHandler)
+      if (!touMoveHandle.moving) {
+        $(this).append(touMoveHandle)
       }
     })
     .on('click', function () {

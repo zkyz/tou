@@ -56,6 +56,7 @@ body {
       display: flex;
     }
   }
+
   &.tou-movement {
     & .tou-guideline {
       display: flex;
@@ -69,10 +70,20 @@ body {
       }
     }
 
-    & .tou-gap {
-      background-color: rgba(51, 102, 153, 0.2);
+    & .tou-gap[data-width] {
+      background-color: rgba(51, 102, 153, 0.1);
       border: 1px dashed transparent;
+
+      &.tou-ready-drop {
+        background-color: rgba(51, 102, 153, 0.3);
+        border-color: #369;
+        z-index: 999;
+      }
     }
+  }
+
+  & .tou-gap:not([data-width]) {
+    outline: none;
   }
 }
 
@@ -113,26 +124,21 @@ body {
 }
 
 .tou {
+  margin-left: 10px;
   padding: 16px 0;
   position: relative;
 
   &:not(.tou-gap):hover {
-    outline: 2px solid #369;
+    outline: 2px solid rgba(51, 102, 153, 0.3);
   }
   &.tou-selected,
   &.tou-moving {
     outline: 3px solid #369 !important;
   }
 
-  &.tou-gap {
-    margin-left: 8px;
-
-    &.tou-ready-drop {
-      background-color: rgba(51, 102, 153, 0.3);
-      border-color: #369;
-    }
-  }
-  &.tou-gap:first-child { margin-left: 0; margin-right: 8px }
+  &:first-child,
+  &:first-child.tou-gap:not([data-width])+.tou,
+  &:first-child.tou-gap[data-width="0"]+.tou{ margin-left: 0 }
 
   &[data-width],
   &[data-width="12"] { width: 100% }
@@ -152,7 +158,6 @@ body {
   &.tou-gap[data-width="0"] {
     width: auto;
     margin-left: 0;
-    margin-right: 0;
   }
 
   & [contenteditable] {
