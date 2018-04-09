@@ -99,6 +99,7 @@ body {
   left: calc(50% - 10px);
   position: absolute;
   top: 3px;
+  visibility: hidden;
   width: 21px;
 }
 
@@ -122,6 +123,7 @@ body {
       height: 70%;
       left: 8px;
       top: 15%;
+      visibility: visible;
       width: 6px;
     }
   }
@@ -134,6 +136,10 @@ body {
 
   &:not(.tou-gap):hover {
     outline: 2px solid rgba(51, 102, 153, 0.3);
+
+    & .tou-move-handle {
+      visibility: visible;
+    }
   }
   &.tou-selected,
   &.tou-moving {

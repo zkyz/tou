@@ -1,91 +1,47 @@
-/* eslint-disable no-tabs */
 import $ from 'jquery'
 import 'jquery-ui/ui/widgets/droppable'
 import 'jquery-ui/ui/widgets/sortable'
 import 'jquery-ui/ui/disable-selection'
 import './tou.scss'
-import movement from './event/movement'
+import movement, {moveProps} from './event/movement'
+import resize, {resizeProps} from './event/resize'
 
 (function () {
-  const sizeHandle = {
-    left: $('<div class="tou-size-handle tou-size-handle-left"/>'),
-    right: $('<div class="tou-size-handle tou-size-handle-right"/>'),
-    target: null,
-    event: {
-      dragLeft: function (e) {
-        const moveWidth = Math.round((e.pageX - sizeHandle.startX) / sizeHandle.grid)
-        sizeHandle.tou.attr('data-width', sizeHandle.width - moveWidth)
-        console.log(sizeHandle.gap)
-        sizeHandle.gap.attr('data-width', sizeHandle.gapWidth + moveWidth)
-      },
-      dragRight: function (e) {
-        const moveWidth = Math.round((e.pageX - sizeHandle.startX) / sizeHandle.grid)
-        sizeHandle.tou.attr('data-width', sizeHandle.width + moveWidth)
-        sizeHandle.gap.attr('data-width', sizeHandle.gapWidth - moveWidth)
-      },
-      end: function () {
-        sizeHandle.list.removeClass('tou-resizing')
-        sizeHandle.container.off('mousemove', sizeHandle.event.drag)
-        $('body').off('mouseup', sizeHandle.event.end).enableSelection()
+  'use strict'
+
+  window.tou = {
+    elements: {
+      groupMove: $('<div class="tou-move-handle tou-group-move-handle"/>'),
+      move: $('<div class="tou-move-handle"/>').on('mousedown', movement.start),
+      resize: {
+        left: $('<div class="tou-size-handle tou-size-handle-left"/>').on('mousedown', resize.toLeft),
+        right: $('<div class="tou-size-handle tou-size-handle-right"/>').on('mousedown', resize.toRight)
       }
     }
   }
 
-  sizeHandle.left.on('mousedown', function (e) {
-    sizeHandle.target = $(this)
-    sizeHandle.list = sizeHandle.target.closest('.tou-list')
-    sizeHandle.container = sizeHandle.target.closest('.tou-group')
-    sizeHandle.width = parseInt(sizeHandle.tou.attr('data-width')) || 12
-    sizeHandle.startX = e.pageX
-    sizeHandle.grid = sizeHandle.container.width() / 12
-    sizeHandle.gap = sizeHandle.tou.prev('.tou-gap')
-    sizeHandle.gapWidth = parseInt(sizeHandle.gap.attr('data-width')) || 0
-
-    sizeHandle.list.addClass('tou-resizing')
-    sizeHandle.container.on('mousemove', sizeHandle.event.dragLeft)
-    $('body').on('mouseup', sizeHandle.event.end).disableSelection()
-  })
-
-  sizeHandle.right.on('mousedown', function (e) {
-    sizeHandle.target = $(this)
-    sizeHandle.list = sizeHandle.target.closest('.tou-list')
-    sizeHandle.container = sizeHandle.target.closest('.tou-group')
-    sizeHandle.width = parseInt(sizeHandle.tou.attr('data-width')) || 12
-    sizeHandle.startX = e.pageX
-    sizeHandle.grid = sizeHandle.container.width() / 12
-    sizeHandle.gap = sizeHandle.tou.next('.tou-gap')
-    sizeHandle.gapWidth = parseInt(sizeHandle.gap.attr('data-width')) || 0
-
-    sizeHandle.list.addClass('tou-resizing')
-    sizeHandle.container.on('mousemove', sizeHandle.event.dragRight)
-    $('body').on('mouseup', sizeHandle.event.end).disableSelection()
-  })
-
-  const touMoveHandle = $('<div class="tou-move-handle"/>')
-
-  touMoveHandle.on('mousedown', movement.start)
-
   $('.tou')
+    .before('<div class="tou tou-gap"/>')
+    .on('click', function () {
+      $('.tou-selected').removeClass('tou-selected')
+
+      resizeProps.target = $(this).addClass('tou-selected')
+        .append(window.tou.elements.resize.left, window.tou.elements.resize.right)
+    })
     .on('mouseenter', function () {
-      if (!touMoveHandle.moving) {
-        $(this).append(touMoveHandle)
+      if (!moveProps.moving) {
+        $(this).append(window.tou.elements.move)
       }
     })
-    .on('click', function () {
-      sizeHandle.tou && sizeHandle.tou.removeClass('tou-selected')
-      sizeHandle.tou = $(this).addClass('tou-selected').append(sizeHandle.left, sizeHandle.right)
-    })
-    .before('<div class="tou tou-gap"/>')
-
-  $('.tou-text')
+    // find '.tou .tou-text' after add attribute
+    .find('.tou-text')
     .attr('contenteditable', true)
 
-  const groupMoveHandler = $('<div class="tou-move-handle tou-group-move-handle"/>')
   $('.tou-group')
-    .on('mouseenter', function () {
-      $(this).append(groupMoveHandler)
-    })
     .append('<div class="tou tou-gap"/>')
+    .on('mouseenter', function () {
+      $(this).append(window.tou.elements.groupMove)
+    })
 
   $('.tou-list')
     .sortable({
