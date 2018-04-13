@@ -1,0 +1,36 @@
+.tou-migrate {
+  &-allowed {
+    background-color: rgba(51, 102, 153, 0.3);
+    border-color: #369;
+    z-index: 999;
+  }
+
+  &-not-allowed {
+    background-color: rgba(205, 0, 0, 0.3);
+  }
+
+  &-handle {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2IiBoZWlnaHQ9IjYiPjxnPjxyZWN0IGZpbGw9Im5vbmUiIGlkPSJjYW52YXNfYmFja2dyb3VuZCIgaGVpZ2h0PSI2IiB3aWR0aD0iNiIgeT0iMCIgeD0iMCIvPjwvZz48Zz48cmVjdCBvcGFjaXR5PSIwLjMiIGlkPSJzdmdfNCIgaGVpZ2h0PSIzIiB3aWR0aD0iMyIgZmlsbD0iIzAwMCIvPjwvZz48L3N2Zz4=);
+    background-size: 3px;
+    cursor: move;
+    height: 6px;
+    left: calc(50% - 10px);
+    position: absolute;
+    top: 3px;
+    width: 21px;
+  }
+
+  & .tou {
+    outline: 1px solid #aaa !important;
+  }
+
+  & .tou-guideline {
+    display: flex;
+  }
+
+  & .tou-gap[data-width] {
+    background-color: rgba(51, 102, 153, 0.1);
+    border: 1px dashed transparent;
+  }
+
+}
