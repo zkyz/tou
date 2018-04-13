@@ -1,16 +1,5 @@
-html, body,
-.mdl-layout__title {
-  font-family: 'Roboto', 'Nanum Gothic', sans-serif;
-}
-
 body {
   background-color: #eee;
-}
-
-@media screen and (max-width: 1024px) {
-  .mdl-layout__tab-bar-button:not(.is-active) {
-    width: 0;
-  }
 }
 
 .tou-container {
@@ -24,16 +13,6 @@ body {
 .tou-list {
   margin: 8px;
   position: relative;
-
-  &>.mdl-grid {
-    padding: 0;
-    margin: 8px;
-    width: 100%;
-
-    &>.mdl-cell {
-      margin: 0;
-    }
-  }
 
   & .tou-guideline {
     display: none;
@@ -51,46 +30,13 @@ body {
       width: calc(8.3333333333% - 8px);
     }
   }
-  &.tou-resizing {
-    & .tou-guideline {
-      display: flex;
-    }
-  }
-
-  &.tou-movement {
-    & .tou-guideline {
-      display: flex;
-    }
-
-    & .tou {
-      outline: 1px solid #aaa !important;
-
-      & .tou-size-handle {
-        visibility: hidden;
-      }
-    }
-
-    & .tou-gap[data-width] {
-      background-color: rgba(51, 102, 153, 0.1);
-      border: 1px dashed transparent;
-
-      &.tou-ready-drop {
-        background-color: rgba(51, 102, 153, 0.3);
-        border-color: #369;
-        z-index: 999;
-      }
-
-      &.tou-not-allowed {
-        background-color: rgba(205, 0, 0, 0.3);
-      }
-    }
-  }
 
   & .tou-gap:not([data-width]) {
     outline: none;
   }
 }
 
+<<<<<<< HEAD
 .tou-move-handle {
   background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2IiBoZWlnaHQ9IjYiPjxnPjxyZWN0IGZpbGw9Im5vbmUiIGlkPSJjYW52YXNfYmFja2dyb3VuZCIgaGVpZ2h0PSI2IiB3aWR0aD0iNiIgeT0iMCIgeD0iMCIvPjwvZz48Zz48cmVjdCBvcGFjaXR5PSIwLjMiIGlkPSJzdmdfNCIgaGVpZ2h0PSIzIiB3aWR0aD0iMyIgZmlsbD0iIzAwMCIvPjwvZz48L3N2Zz4=);
   background-size: 3px;
@@ -103,6 +49,8 @@ body {
   width: 21px;
 }
 
+=======
+>>>>>>> tou movement #3
 .ui-sortable-helper {
   background-color: #fff;
   opacity: .7;
@@ -113,13 +61,15 @@ body {
   position: relative;
 
   &:hover {
-    box-shadow:
-            0 6px 10px 0 rgba(0, 0, 0, 0.14),
-            0 1px 10px 0 rgba(0, 0, 0, 0.12),
-            0 3px 5px -1px rgba(0, 0, 0, 0.1);
-    z-index: 1;
+    /*
+      box-shadow:
+              0 6px 10px 0 rgba(0, 0, 0, 0.14),
+              0 1px 10px 0 rgba(0, 0, 0, 0.12),
+              0 3px 5px -1px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+    */
 
-    &>.tou-group-move-handle {
+    &>.tou-group-handle {
       height: 70%;
       left: 8px;
       top: 15%;
@@ -142,7 +92,7 @@ body {
     }
   }
   &.tou-selected,
-  &.tou-moving {
+  &.tou-migrate-ing {
     outline: 3px solid #369 !important;
   }
 
@@ -176,24 +126,5 @@ body {
 
   & .tou-text {
     padding: 0 16px;
-  }
-}
-
-.tou-size-handle {
-  background-color: #369;
-  border: 1px solid #fff;
-  border-radius: 50%;
-  cursor: col-resize;
-  cursor: ew-resize;
-  height: 11px;
-  position: absolute;
-  top: calc(50% - 8px);
-  width: 11px;
-
-  &-left {
-    left: -8px;
-  }
-  &-right {
-    right: -8px;
   }
 }

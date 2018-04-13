@@ -1,4 +1,5 @@
 import $ from 'jquery'
+<<<<<<< HEAD
 import 'jquery-ui/ui/widgets/droppable'
 import 'jquery-ui/ui/widgets/sortable'
 import 'jquery-ui/ui/disable-selection'
@@ -36,10 +37,33 @@ import resize, {resizeProps} from './event/resize'
     // find '.tou .tou-text' after add attribute
     .find('.tou-text')
     .attr('contenteditable', true)
+=======
+
+import './tou.scss'
+
+import migrate from './migrate'
+import resize from './resize'
+
+resize()
+migrate()
+
+;
+// .tou-group migrate
+(function () {
+  const prop = {
+    y: 0
+  }
+
+  const handle = $('<div class="tou-migrate-handle tou-group-handle"/>')
+    .on('mousedown', function (e) {
+      prop.y = e.pageY
+    })
+>>>>>>> tou movement #3
 
   $('.tou-group')
     .append('<div class="tou tou-gap"/>')
     .on('mouseenter', function () {
+<<<<<<< HEAD
       $(this).append(window.tou.elements.groupMove)
     })
 
@@ -48,5 +72,8 @@ import resize, {resizeProps} from './event/resize'
       revert: true,
       axis: 'y',
       handle: '.tou-group-move-handle'
+=======
+      $(this).append(handle)
+>>>>>>> tou movement #3
     })
 })()

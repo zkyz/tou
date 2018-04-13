@@ -1,0 +1,30 @@
+.tou-resize-ing {
+  & .tou-guideline {
+    display: flex;
+  }
+}
+
+.tou-movement {
+  & .tou-resize-handle {
+    visibility: hidden;
+  }
+}
+
+.tou-resize-handle {
+  background-color: #369;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  cursor: col-resize;
+  cursor: ew-resize;
+  height: 11px;
+  position: absolute;
+  top: calc(50% - 8px);
+  width: 11px;
+
+  &-left {
+    left: -8px;
+  }
+  &-right {
+    right: -8px;
+  }
+}
