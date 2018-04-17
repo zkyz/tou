@@ -69,7 +69,7 @@ body {
   &:first-child.tou-gap:not([data-width])+.tou,
   &:first-child.tou-gap[data-width="0"]+.tou{ margin-left: 0 }
 
-  &[data-width],
+  //&[data-width],
   &[data-width="12"] { width: 100% }
   &[data-width="11"] { width: calc(91.6666666667% - 1px) }
   &[data-width="10"] { width: calc(83.3333333333% - 2px) }

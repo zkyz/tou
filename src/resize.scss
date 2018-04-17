@@ -1,12 +1,6 @@
 .tou-resize-ing {
   & .tou-guideline {
-    display: flex;
-  }
-}
-
-.tou-movement {
-  & .tou-resize-handle {
-    visibility: hidden;
+    display: flex!important;
   }
 }
 
@@ -32,5 +26,32 @@
     cursor: ns-resize;
     left: calc(50% - 10px);
     top: calc(100% - 8px);
+  }
+}
+
+.tou-fixed-height {
+  &:hover {
+    & >.tou-unfix-handle {
+      bottom: 8px;
+      cursor: pointer;
+      display: block;
+      left: calc(50% - 100px);
+      opacity: 0.2;
+      position: absolute;
+      text-align: center;
+      width: 200px;
+
+      &:hover {
+        opacity: 0.5;
+      }
+
+      &::before {
+        background-color: #ccc;
+        border-radius: 0.8em;
+        content: '높이고정 없애기';
+        font-size: 0.8em;
+        padding: 4px 8px;
+      }
+    }
   }
 }

@@ -35,6 +35,8 @@
   }
 }
 
-.tou-migrate-handle:hover {
-  visibility: visible;
+.tou {
+  &:hover .tou-migrate-handle {
+    visibility: visible;
+  }
 }

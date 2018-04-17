@@ -28,7 +28,7 @@ export default () => {
         y: e.pageY
       }
 
-      element.tou = $(this).closest('.tou')
+      element.tou = $(this).parent()
       element.group = element.tou.parent()
       element.list = element.tou.closest('.tou-list')
 
@@ -118,11 +118,9 @@ export default () => {
           })
           .delay(500)
           .css({
-            'transition': 'non'
+            'transition': 'none'
           })
       }
-
-      $('.tou-list').removeClass('tou-movement')
 
       $('.tou-gap')
         .off('mouseenter', event.enter)
@@ -132,9 +130,19 @@ export default () => {
         .off('mousemove', event.drag)
         .off('mouseup', event.end)
 
+      element.list.removeClass('tou-migrate')
+
       element.destination = null
     }
   }
+
+  element.handle
+    .on('mousedown', event.start)
+
+  $('.tou')
+    .on('mouseenter', function () {
+      $(this).append(element.handle)
+    })
 
   return {
     event
