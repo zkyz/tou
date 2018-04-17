@@ -1,12 +1,12 @@
 import $ from 'jquery'
 import './migrate.scss'
 
-export default function () {
+export default () => {
   const element = {
     handle: $('<div class="tou-migrate-handle"/>'),
     body: $(document.body),
     tou: null,
-    parent: null,
+    group: null,
     list: null,
     destination: null
   }
@@ -29,7 +29,7 @@ export default function () {
       }
 
       element.tou = $(this).closest('.tou')
-      element.parent = element.tou.parent()
+      element.group = element.tou.parent()
       element.list = element.tou.closest('.tou-list')
 
       element.list.addClass('tou-migrate')
@@ -53,7 +53,7 @@ export default function () {
     enter () {
       const $this = $(this)
 
-      if ($this.parent().is(element.parent)) {
+      if ($this.parent().is(element.group)) {
         element.destination = null
         $this.addClass('tou-migrate-not-allowed')
       }
@@ -134,5 +134,9 @@ export default function () {
 
       element.destination = null
     }
+  }
+
+  return {
+    event
   }
 }

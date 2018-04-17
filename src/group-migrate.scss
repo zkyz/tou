@@ -1,0 +1,23 @@
+.tou-group {
+  &:hover .tou-group-handle {
+    height: 70%;
+    left: 8px;
+    top: 15%;
+    visibility: visible !important;
+    width: 6px;
+  }
+
+  &-ing {
+    outline: 2px dashed #369;
+    opacity: .7;
+    pointer-events: none;
+    position: absolute!important;
+  }
+
+  &-pseudo {
+    background-color: #aaa;
+    border: 1px solid #369;
+    display: none;
+    opacity: 0.5;
+  }
+}

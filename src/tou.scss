@@ -36,47 +36,20 @@ body {
   }
 }
 
-<<<<<<< HEAD
-.tou-move-handle {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2IiBoZWlnaHQ9IjYiPjxnPjxyZWN0IGZpbGw9Im5vbmUiIGlkPSJjYW52YXNfYmFja2dyb3VuZCIgaGVpZ2h0PSI2IiB3aWR0aD0iNiIgeT0iMCIgeD0iMCIvPjwvZz48Zz48cmVjdCBvcGFjaXR5PSIwLjMiIGlkPSJzdmdfNCIgaGVpZ2h0PSIzIiB3aWR0aD0iMyIgZmlsbD0iIzAwMCIvPjwvZz48L3N2Zz4=);
-  background-size: 3px;
-  cursor: move;
-  height: 6px;
-  left: calc(50% - 10px);
-  position: absolute;
-  top: 3px;
-  visibility: hidden;
-  width: 21px;
-}
-
-=======
->>>>>>> tou movement #3
-.ui-sortable-helper {
-  background-color: #fff;
-  opacity: .7;
-}
-
 .tou-group {
   display: flex;
   position: relative;
+  transition: transform .3ms;
 
+  /*
   &:hover {
-    /*
       box-shadow:
               0 6px 10px 0 rgba(0, 0, 0, 0.14),
               0 1px 10px 0 rgba(0, 0, 0, 0.12),
               0 3px 5px -1px rgba(0, 0, 0, 0.1);
       z-index: 1;
-    */
-
-    &>.tou-group-handle {
-      height: 70%;
-      left: 8px;
-      top: 15%;
-      visibility: visible;
-      width: 6px;
-    }
   }
+  */
 }
 
 .tou {
@@ -86,10 +59,6 @@ body {
 
   &:not(.tou-gap):hover {
     outline: 2px solid rgba(51, 102, 153, 0.3);
-
-    & .tou-move-handle {
-      visibility: visible;
-    }
   }
   &.tou-selected,
   &.tou-migrate-ing {
