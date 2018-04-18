@@ -12,6 +12,10 @@
     opacity: .7;
     pointer-events: none;
     position: absolute!important;
+
+    & * {
+      pointer-events: none;
+    }
   }
 
   &-pseudo {

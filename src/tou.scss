@@ -61,8 +61,9 @@ body {
     outline: 2px solid rgba(51, 102, 153, 0.3);
   }
   &.tou-selected,
+  &.tou-selected:hover,
   &.tou-migrate-ing {
-    outline: 3px solid #369 !important;
+    outline: 3px solid #369;
   }
 
   &:first-child,

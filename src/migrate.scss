@@ -16,22 +16,35 @@
     height: 6px;
     left: calc(50% - 10px);
     position: absolute;
-    top: 3px;
+    top: 8px;
     visibility: hidden;
     width: 21px;
   }
 
   & .tou {
-    outline: 1px solid #aaa !important;
+    outline: none;
+
+    &.tou-moving {
+      outline: 2px solid #369;
+    }
   }
 
   & .tou-guideline {
-    display: flex;
+    display: flex!important;
+  }
+
+  & .tou-resize-handle,
+  & .tou-migrate-handle {
+    display: none;
+  }
+
+  & .tou-selected {
+    outline-color: transparent!important;
   }
 
   & .tou-gap[data-width] {
     background-color: rgba(51, 102, 153, 0.1);
-    border: 1px dashed transparent;
+    border: 1px dashed rgba(51, 102, 153, 0.5);
   }
 }
 

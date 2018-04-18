@@ -50,8 +50,6 @@ export default () => {
           'height': prop.height
         })
         .after(element.pseudo)
-
-      element.handle.css('pointer-events', 'none')
     },
     drag (e) {
       element.group.css({
@@ -64,10 +62,6 @@ export default () => {
       }
     },
     end () {
-      element.handle.css({
-        'pointer-events': ''
-      })
-
       element.group
         .animate({
           'top': element.pseudo.position().top

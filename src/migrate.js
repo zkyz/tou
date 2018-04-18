@@ -1,4 +1,6 @@
 import $ from 'jquery'
+import './utils/jquery.addons'
+
 import './migrate.scss'
 
 export default () => {
@@ -12,10 +14,8 @@ export default () => {
   }
 
   const prop = {
-    position: {
-      x: 0,
-      y: 0
-    }
+    x: 0,
+    y: 0
   }
 
   const event = {
@@ -23,15 +23,14 @@ export default () => {
       e.preventDefault()
       e.stopPropagation()
 
-      prop.position = {
-        x: e.pageX,
-        y: e.pageY
-      }
+      prop.x = e.pageX
+      prop.y = e.pageY
 
       element.tou = $(this).parent()
       element.group = element.tou.parent()
       element.list = element.tou.closest('.tou-list')
 
+      element.tou.addClass('tou-moving')
       element.list.addClass('tou-migrate')
       element.body
         .on('mousemove', event.drag)
@@ -42,13 +41,8 @@ export default () => {
         .on('mouseleave', event.leave)
     },
     drag (e) {
-      const distance = [
-        e.pageX - prop.position.x,
-        e.pageY - prop.position.y
-      ]
-
-      element.tou.css('transform', `translate(${distance[0]}px, ${distance[1]}px) ` +
-        'scale(.5, .5) rotate(-5deg)')
+      element.tou.css('transform', `translate(${e.pageX - prop.x}px, ${e.pageY - prop.y}px) ` +
+        'scale(.5, .5) rotate(-1deg)')
     },
     enter () {
       const $this = $(this)
@@ -67,13 +61,8 @@ export default () => {
       $(this).removeClass('tou-migrate-allowed tou-migrate-not-allowed')
     },
     end: function () {
-      const $this = $(this)
-
-      $this.removeClass('tou-migrate-allowed tou-migrate-not-allowed')
-
-      if (!$this.data('width') || parseInt($this.data('width')) < 1) {
-        return
-      }
+      $('.tou-migrate-allowed').toggleClass()
+      $('.tou-migrate-not-allowed').toggleClass()
 
       if (element.destination) {
         const dataWidth = element.destination.attr('data-width')
@@ -86,17 +75,13 @@ export default () => {
           .before(element.tou)
 
         element.tou
-          .css({
-            'background-color': '#369',
-            'transform': 'none',
-            'transition': 'outline,background-color .5s'
-          })
-          .delay(500)
-          .css({
-            'background-color': ''
-          })
           .attr('data-width', dataWidth)
-          .before('<div class="tou tou-gap" id="x"/>')
+          .removeClass('tou-moving')
+          .css({
+            'transform': 'none',
+            'transition': 'none'
+          })
+          .before('<div class="tou tou-gap"/>')
 
         if (!touGroup.has('.tou:not(.tou-gap)').length) {
           touGroup.remove()
@@ -116,8 +101,7 @@ export default () => {
             'transition': 'transform .4s',
             'transform': 'none'
           })
-          .delay(500)
-          .css({
+          .cssRelease(400, {
             'transition': 'none'
           })
       }
@@ -139,7 +123,7 @@ export default () => {
   element.handle
     .on('mousedown', event.start)
 
-  $('.tou')
+  $('.tou').not('.tou-gap')
     .on('mouseenter', function () {
       $(this).append(element.handle)
     })
