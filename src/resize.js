@@ -4,30 +4,20 @@ import 'jquery-ui/ui/disable-selection'
 import './resize.scss'
 
 export default () => {
-  const SIDE_LEFT = 'LEFT'
-  const SIDE_RIGHT = 'RIGHT'
+  const SIDE_LEFT = 'left'
+  const SIDE_RIGHT = 'right'
 
   const prop = {
-    side: '',
-    width: 0,
-    height: 0,
-    x: 0,
-    y: 0,
-    gridSize: 0,
-    gapSize: 0
+    size: {}
   }
 
   const element = {
     handle: $('<div class="tou-resize-handle"/>'),
-    left: $('<div class="tou-resize-handle tou-resize-handle-left"/>'),
-    right: $('<div class="tou-resize-handle tou-resize-handle-right"/>'),
+    left:   $('<div class="tou-resize-handle tou-resize-handle-left"/>'),
+    right:  $('<div class="tou-resize-handle tou-resize-handle-right"/>'),
     bottom: $('<div class="tou-resize-handle tou-resize-handle-bottom"/>'),
-    unfix: $('<a class="tou-unfix-handle"/>'),
-    body: $(document.body),
-    tou: null,
-    gap: null,
-    list: null,
-    group: null
+    unfix:  $('<a class="tou-unfix-handle"/>'),
+    body:   $(document.body)
   }
 
   const event = {
@@ -37,26 +27,47 @@ export default () => {
 
       element.group = element.tou.parent()
       element.list = element.tou.closest('.tou-list')
-      element.gap = element.tou[prop.side === SIDE_LEFT ? 'prev' : 'next']('.tou-gap')
 
-      prop.gridSize = element.group.width() / 12
-      prop.width = parseInt(element.tou.attr('data-width')) || 12
-      prop.gapWidth = parseInt(element.gap.attr('data-width')) || 0
+      prop.size.grid = element.group.width() / 12
+      prop.size.gap = parseInt(element.tou.attr('data-gap')) || 0
+      prop.size.width = parseInt(element.tou.attr('data-width')) || 12
 
-      element.list.addClass('tou-resize-ing')
-      element.body
-        .on('mousemove', event.drag)
-        .on('mouseup', event.end).disableSelection()
-    },
-    drag (e) {
-      let moveWidth = Math.round((e.pageX - prop.x) / prop.gridSize)
-
-      if (prop.side === SIDE_RIGHT) {
-        moveWidth *= -1
+      element.next = element.tou.next()
+      if (element.next.length === 0) {
+        prop.size.next = {
+          gap: 0,
+          width: 0
+        }
+      }
+      else {
+        prop.size.next = {
+          gap: parseInt(element.next.attr('data-gap')) || 0,
+          width: parseInt(element.next.attr('data-width'))
+        }
       }
 
-      element.tou.attr('data-width', prop.width - moveWidth)
-      element.gap.attr('data-width', prop.gapWidth + moveWidth)
+      element.list.addClass('tou-resize-ing')
+      element.body.on('mousemove', event.drag)
+                  .on('mouseup', event.end)
+                  .disableSelection()
+    },
+    drag (e) {
+      let moveWidth = Math.round((e.pageX - prop.x) / prop.size.grid)
+
+
+      let width = prop.width - moveWidth
+      if (width < 1) {
+        width = 1
+      }
+
+      let gapWidth = prop.gapSize + moveWidth
+      if (gapWidth + width + prop.otherGapSize > 12) {
+        gapWidth = 12 - width - prop.otherGapSize
+      }
+
+      element.tou
+        .attr('data-width', width)
+        .attr(`data-gap-${prop.side}`, gapWidth)
     },
     end () {
       element.list.removeClass('tou-resize-ing')
@@ -99,7 +110,6 @@ export default () => {
 
     const end = () => {
       element.tou.parent().addClass('tou-fixed-height')
-
       element.body
         .off('mousemove', drag)
         .off('mouseup', end)
@@ -120,7 +130,6 @@ export default () => {
   })
 
   $('.tou')
-    .before('<div class="tou tou-gap"/>')
     .on('click', function () {
       $('.tou-selected').removeClass('tou-selected')
       $(this)
@@ -130,7 +139,4 @@ export default () => {
         .append(element.bottom)
         .append(element.unfix)
     })
-
-  $('.tou-group')
-    .append('<div class="tou tou-gap"/>')
 }

@@ -1,7 +1,8 @@
 {
   "extends": "standard",
   "rules": {
-    "indent": ["error", 2],
-    "brace-style": ["error", "stroustrup"]
+    "indent": ["error", 2, { "MemberExpression": "off" }],
+    "brace-style": ["error", "stroustrup"],
+    "key-spacing": ["warn", {"mode": "minimum"}]
   }
 }
