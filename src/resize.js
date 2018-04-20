@@ -21,7 +21,7 @@ const event = {
 
       prop.x = e.pageX
       prop.width = parseInt(element.tou.attr('data-width'))
-      prop.max = 12 - element.group.find('.tou').not(element.tou).sum('data-width')
+      prop.max = 12 - element.group.find('.tou').not(element.tou).attrSum('data-width')
       prop.cellsize = element.group.width() / 12
 
       element.list.addClass('tou-resize-ing')

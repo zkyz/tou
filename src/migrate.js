@@ -44,7 +44,7 @@ const event = {
     element.target = $(this)
     element.group = element.target.parent().append(element.guide)
 
-    prop.ableWidth = 12 - element.group.find('.tou').sum('data-width')
+    prop.ableWidth = 12 - element.group.find('.tou').attrSum('data-width')
     prop.offset = element.target.offset()
     prop.position = {
       top:  element.target.offsetParent().top,

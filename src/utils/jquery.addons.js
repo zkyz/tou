@@ -1,16 +1,7 @@
 import $ from 'jquery'
 
 (function () {
-  $.fn.cssRelease = function (timer, props) {
-    setTimeout((function (_this) {
-      return function () {
-        _this.css(props)
-      }
-    })($(this)), timer)
-    return this
-  }
-
-  $.fn.sum = function (attr) {
+  $.fn.attrSum = function (attr) {
     let sum = 0
 
     this.each((i, el) => {
@@ -20,7 +11,7 @@ import $ from 'jquery'
     return sum
   }
 
-  $.fn.max = function (attr) {
+  $.fn.attrMax = function (attr) {
     let max = 0
     let element = null
 
