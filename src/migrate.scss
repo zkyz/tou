@@ -21,11 +21,30 @@
     width: 21px;
   }
 
+  &-guide {
+    background-color: #69a;
+    border-radius: 4px;
+    display: none;
+    position: absolute;
+
+    &.tou-migrate-guide-h {
+      display: block;
+      height: 8px;
+      width: 100%;
+    }
+    &.tou-migrate-guide-v {
+      display: block;
+      height: 100%;
+      width: 8px;
+    }
+  }
+
   & .tou {
     outline: none;
 
     &.tou-moving {
       outline: 2px solid #369;
+      pointer-events: none;
     }
   }
 

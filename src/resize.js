@@ -3,140 +3,105 @@ import 'jquery-ui/ui/disable-selection'
 
 import './resize.scss'
 
-export default () => {
-  const SIDE_LEFT = 'left'
-  const SIDE_RIGHT = 'right'
+const prop = {}
 
-  const prop = {
-    size: {}
-  }
+const element = {
+  right:  $('<div class="tou-resize-handle tou-resize-handle-right"/>'),
+  bottom: $('<div class="tou-resize-handle tou-resize-handle-bottom"/>'),
+  unfix:  $('<a class="tou-unfix-handle"/>'),
+  body:   $(document.body)
+}
 
-  const element = {
-    handle: $('<div class="tou-resize-handle"/>'),
-    left:   $('<div class="tou-resize-handle tou-resize-handle-left"/>'),
-    right:  $('<div class="tou-resize-handle tou-resize-handle-right"/>'),
-    bottom: $('<div class="tou-resize-handle tou-resize-handle-bottom"/>'),
-    unfix:  $('<a class="tou-unfix-handle"/>'),
-    body:   $(document.body)
-  }
-
-  const event = {
+const event = {
+  horizontal: {
     start (e) {
-      e.preventDefault()
-      e.stopPropagation()
-
+      element.tou = $(this).parent()
       element.group = element.tou.parent()
       element.list = element.tou.closest('.tou-list')
 
-      prop.size.grid = element.group.width() / 12
-      prop.size.gap = parseInt(element.tou.attr('data-gap')) || 0
-      prop.size.width = parseInt(element.tou.attr('data-width')) || 12
-
-      element.next = element.tou.next()
-      if (element.next.length === 0) {
-        prop.size.next = {
-          gap: 0,
-          width: 0
-        }
-      }
-      else {
-        prop.size.next = {
-          gap: parseInt(element.next.attr('data-gap')) || 0,
-          width: parseInt(element.next.attr('data-width'))
-        }
-      }
+      prop.x = e.pageX
+      prop.width = parseInt(element.tou.attr('data-width'))
+      prop.max = 12 - element.group.find('.tou').not(element.tou).sum('data-width')
+      prop.cellsize = element.group.width() / 12
 
       element.list.addClass('tou-resize-ing')
-      element.body.on('mousemove', event.drag)
-                  .on('mouseup', event.end)
-                  .disableSelection()
+
+      element.body
+        .on('mousemove', event.horizontal.drag)
+        .on('mouseup', event.horizontal.end)
+        .disableSelection()
     },
     drag (e) {
-      let moveWidth = Math.round((e.pageX - prop.x) / prop.size.grid)
+      let movement = Math.round((e.pageX - prop.x) / prop.cellsize)
 
-
-      let width = prop.width - moveWidth
+      let width = prop.width + movement
       if (width < 1) {
         width = 1
       }
 
-      let gapWidth = prop.gapSize + moveWidth
-      if (gapWidth + width + prop.otherGapSize > 12) {
-        gapWidth = 12 - width - prop.otherGapSize
+      if (width > prop.max) {
+        width = prop.max
       }
 
       element.tou
         .attr('data-width', width)
-        .attr(`data-gap-${prop.side}`, gapWidth)
     },
     end () {
       element.list.removeClass('tou-resize-ing')
       element.body
-        .off('mousemove', event.drag)
-        .off('mouseup', event.end).enableSelection()
-    }
-  }
-
-  element.left.on('mousedown', function (e) {
-    prop.side = SIDE_LEFT
-    prop.x = e.pageX
-
-    element.tou = $(this).parent()
-
-    event.start(e)
-  })
-
-  element.right.on('mousedown', function (e) {
-    prop.side = SIDE_RIGHT
-    prop.x = e.pageX
-
-    element.tou = $(this).parent()
-
-    event.start(e)
-  })
-
-  element.bottom.on('mousedown', function (e) {
-    e.preventDefault()
-    e.stopPropagation()
-
-    element.tou = $(this).parent().find('.tou-item')
-
-    prop.y = e.pageY
-    prop.height = element.tou.height()
-
-    const drag = function (e) {
-      element.tou.height(prop.height + e.pageY - prop.y)
-    }
-
-    const end = () => {
-      element.tou.parent().addClass('tou-fixed-height')
-      element.body
-        .off('mousemove', drag)
-        .off('mouseup', end)
+        .off('mousemove', event.horizontal.drag)
+        .off('mouseup', event.horizontal.end)
         .enableSelection()
     }
+  },
+  vertical:   {
+    start (e) {
+      element.tou = $(this).parent().find('.tou-item')
 
-    element.body
-      .on('mousemove', drag)
-      .on('mouseup', end)
-      .disableSelection()
-  })
+      prop.y = e.pageY
+      prop.height = element.tou.height()
+
+      element.body
+        .on('mousemove', event.vertical.drag)
+        .on('mouseup', event.vertical.end)
+        .disableSelection()
+    },
+    drag (e) {
+      element.tou.height(prop.height + e.pageY - prop.y)
+    },
+    end () {
+      element.tou.parent().addClass('tou-fixed-height')
+      element.body
+        .off('mousemove', event.vertical.drag)
+        .off('mouseup', event.vertical.end)
+        .enableSelection()
+    }
+  }
+}
+
+export default () => {
+  element.right.on('mousedown', event.horizontal.start)
+  element.bottom.on('mousedown', event.vertical.start)
 
   element.unfix.on('click', function () {
-    $(this).parent()
+    $(this)
+      .parent()
       .removeClass('tou-fixed-height')
       .find('.tou-item')
       .height('auto')
   })
 
-  $('.tou')
-    .on('click', function () {
-      $('.tou-selected').removeClass('tou-selected')
-      $(this)
-        .addClass('tou-selected')
-        .append(element.left)
-        .append(element.right)
-        .append(element.bottom)
-        .append(element.unfix)
-    })
+  // apply all of .tou
+  $('.tou').on('click', initialize)
+}
+
+export function initialize () {
+  $('.tou-selected')
+    .removeClass('tou-selected')
+
+  $(this)
+    .addClass('tou-selected')
+    .append(element.right)
+    .append(element.bottom)
+    .append(element.unfix)
 }
