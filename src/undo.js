@@ -1,5 +1,9 @@
 export const TYPES = {
-  TEXT: 'TEXT'
+  TEXT: 'TEXT',
+  RESIZE: {
+    X: 'RESIZE-X',
+    Y: 'RESIZE-Y'
+  }
 }
 
 export const typing = {
@@ -10,73 +14,81 @@ export const typing = {
 const records = []
 let index = -1
 
-export function save (type, element, props) {
-  records.splice(index + 1)
-
-  const record = records[index]
-  if (record) {
-    // type "TEXT" check by length
-    if (type === TYPES.TEXT &&
-      record.element === element &&
-      record.value.length === props.value.length
-    ) {
-      return
-    }
-    else if (record.type === type &&
-      record.element === element &&
-      record.value === props.value
-    ) {
-      return
-    }
+export function save (type, element, before, after, props) {
+  if (before === after) {
+    return
   }
 
-  console.log('execute save!')
-
+  records.splice(index + 1)
   records.push({
     type,
     element,
+    value: {
+      before,
+      after
+    },
     ...props
   })
 
   index++
+
+  console.log('execute save!', index)
+}
+
+const execute = function (record, redo) {
+  if (!record) {
+    return
+  }
+
+  console.log('execute', index)
+
+  const {type, element, value} = record
+
+  switch (type) {
+  case TYPES.TEXT:
+    element.innerHTML = value
+    caret.set(element, record.caret)
+    break
+  case TYPES.RESIZE.X:
+    element.setAttribute('data-width', value[redo ? 'after' : 'before'])
+    break
+  case TYPES.RESIZE.Y:
+    const size = value[redo ? 'after' : 'before']
+
+    element.style.height = size
+
+    if (!size || size === 'auto') {
+      element.parentNode.classList.remove('tou-fixed-height')
+    }
+    break
+  }
 }
 
 const redo = function () {
-  const record = records[++index]
+  execute(records[index], true)
 
-  if (record) {
-    switch (record.type) {
-    case TYPES.TEXT:
-      record.element.innerHTML = record.value
-    }
-  }
-
-  if (index > records.length - 1) {
+  if (++index > records.length - 1) {
     index = records.length - 1
   }
 }
 
 const undo = function () {
-  if (index === records.length) {
-    index--
-  }
+  execute(records[index])
 
-  const record = records[--index]
-
-  if (record) {
-    switch (record.type) {
-    case TYPES.TEXT:
-      record.element.innerHTML = record.value
-
-      if (record.caret && record.caret.path) {
-        const range = document.createRange()
-      }
-      break
-    }
-  }
-
-  if (index < 0) {
+  if (--index < 0) {
     index = 0
+  }
+}
+
+const caret = {
+  selection: window.getSelection(),
+  range:     document.createRange(),
+  set (element, info) {
+    const caretElement = info.id === element.id ? element : element.querySelector(`#${info.id}`)
+
+    this.range.setStart(caretElement.childNodes[info.childNo], info.offset)
+    this.selection.removeAllRanges()
+    this.selection.addRange(this.range)
   }
 }
 

@@ -1,6 +1,8 @@
 import $ from 'jquery'
 import 'jquery-ui/ui/disable-selection'
 
+import * as undo from './undo'
+
 import './resize.scss'
 
 const prop = {}
@@ -52,6 +54,9 @@ const event = {
         .off('mousemove', event.horizontal.drag)
         .off('mouseup', event.horizontal.end)
         .enableSelection()
+
+      undo.save(undo.TYPES.RESIZE.X, element.tou[0], prop.width,
+        parseInt(element.tou.attr('data-width')))
     }
   },
   vertical:   {
@@ -60,6 +65,7 @@ const event = {
 
       prop.y = e.pageY
       prop.height = element.tou.height()
+      prop.initHeight = element.tou[0].style.height
 
       element.body
         .on('mousemove', event.vertical.drag)
@@ -75,6 +81,9 @@ const event = {
         .off('mousemove', event.vertical.drag)
         .off('mouseup', event.vertical.end)
         .enableSelection()
+
+      undo.save(undo.TYPES.RESIZE.Y, element.tou[0], prop.initHeight,
+        element.tou[0].style.height)
     }
   }
 }
@@ -84,6 +93,8 @@ export default () => {
   element.bottom.on('mousedown', event.vertical.start)
 
   element.unfix.on('click', function () {
+    undo.save(undo.TYPES.RESIZE.Y, this, this.style.height, 'auto')
+
     $(this)
       .parent()
       .removeClass('tou-fixed-height')

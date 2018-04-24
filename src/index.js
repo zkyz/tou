@@ -21,23 +21,16 @@ groupMigrate()
     return e.ctrlKey || e.metaKey || e.altKey
   }
 
-  const getSelectorPath = function (element) {
-    const path = []
-
-    if (undo.typing.element) {
-      let current = element
-      while ((current = current.parentNode) !== undo.typing.element) {
-        path.push(current.nodeName)
-
-        console.log(path)
-
-        if (!current) {
-          return ''
-        }
-      }
+  const setFocusId = function (element) {
+    if (element.parentNode.id) {
+      return element.parentNode.id
     }
+    else {
+      const id = new Date().getTime().toString(36)
 
-    return path.reverse().join('>')
+      element.parentNode.id = id
+      return id
+    }
   }
 
   const getChildNo = function (element) {
@@ -53,12 +46,12 @@ groupMigrate()
 
   const save = function () {
     undo.save(undo.TYPES.TEXT, undo.typing.element, {
-      value: undo.typing.element.innerHTML,
       caret: {
         offset:  selection.focusOffset,
-        path:    getSelectorPath(selection.focusNode),
+        id:      setFocusId(selection.focusNode),
         childNo: getChildNo(selection.focusNode)
-      }
+      },
+      value: undo.typing.element.innerHTML
     })
   }
 
