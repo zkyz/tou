@@ -2,22 +2,39 @@ export const TYPES = {
   TEXT: 'TEXT'
 }
 
+export const typing = {
+  element: null,
+  timer:   null
+}
+
 const records = []
-let index = 0
+let index = -1
 
-export function save (type, props) {
-  records.splice(index)
+export function save (type, element, props) {
+  records.splice(index + 1)
 
-  const record = records[index - 1]
-
-  if (record &&
-    record.type === type &&
-    record.value === props.value) {
-    return
+  const record = records[index]
+  if (record) {
+    // type "TEXT" check by length
+    if (type === TYPES.TEXT &&
+      record.element === element &&
+      record.value.length === props.value.length
+    ) {
+      return
+    }
+    else if (record.type === type &&
+      record.element === element &&
+      record.value === props.value
+    ) {
+      return
+    }
   }
+
+  console.log('execute save!')
 
   records.push({
     type,
+    element,
     ...props
   })
 
@@ -25,22 +42,17 @@ export function save (type, props) {
 }
 
 const redo = function () {
-  if (index === 0) {
-    index++
-  }
-
-  const record = records[index++]
+  const record = records[++index]
 
   if (record) {
     switch (record.type) {
     case TYPES.TEXT:
-      console.log(record)
-      // record.element.innerHTML = record.after
+      record.element.innerHTML = record.value
     }
   }
 
-  if (index > records.length) {
-    index = records.length
+  if (index > records.length - 1) {
+    index = records.length - 1
   }
 }
 
@@ -54,8 +66,11 @@ const undo = function () {
   if (record) {
     switch (record.type) {
     case TYPES.TEXT:
-      console.log(record)
-      // record.element.innerHTML = record.before
+      record.element.innerHTML = record.value
+
+      if (record.caret && record.caret.path) {
+        const range = document.createRange()
+      }
       break
     }
   }
@@ -70,6 +85,8 @@ document.body.addEventListener('keydown', function (e) {
     e.preventDefault()
     e.stopPropagation()
 
+    clearTimeout(typing.timer)
+
     if (e.shiftKey) {
       redo()
     }
@@ -77,10 +94,4 @@ document.body.addEventListener('keydown', function (e) {
       undo()
     }
   }
-})
-
-document.body.addEventListener('keypress', function (e) {
-  save(TYPES.TEXT, {
-    value: e.keyCode
-  })
 })
