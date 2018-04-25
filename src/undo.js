@@ -1,16 +1,3 @@
-export const TYPES = {
-  TEXT: 'TEXT',
-  RESIZE: {
-    X: 'RESIZE-X',
-    Y: 'RESIZE-Y'
-  }
-}
-
-export const typing = {
-  element: null,
-  timer:   null
-}
-
 const records = []
 let index = -1
 
@@ -46,8 +33,8 @@ const execute = function (record, redo) {
 
   switch (type) {
   case TYPES.TEXT:
-    element.innerHTML = value
-    caret.set(element, record.caret)
+    element.innerHTML = value[redo ? 'after' : 'before']
+    caret.set(element, record.caret[redo ? 'after' : 'before'])
     break
   case TYPES.RESIZE.X:
     element.setAttribute('data-width', value[redo ? 'after' : 'before'])
@@ -64,6 +51,56 @@ const execute = function (record, redo) {
   }
 }
 
+export const TYPES = {
+  TEXT:   'TEXT',
+  RESIZE: {
+    X: 'RESIZE-X',
+    Y: 'RESIZE-Y'
+  }
+}
+export const typing = {
+  before: {}
+}
+export const caret = {
+  selection: window.getSelection(),
+  range:     document.createRange(),
+  set (element, info) {
+    const caretElement = info.caretId === element.id ? element : element.querySelector(`#${info.caretId}`)
+
+    this.range.setStart(caretElement.childNodes[info.childNo], info.offset)
+    this.selection.removeAllRanges()
+    this.selection.addRange(this.range)
+  },
+  get () {
+    return {
+      offset:  this.selection.focusOffset,
+      caretId: this.setFocusId(this.selection.focusNode),
+      childNo: this.getChildNo(this.selection.focusNode)
+    }
+  },
+  setFocusId (element) {
+    if (element.parentNode.id) {
+      return element.parentNode.id
+    }
+    else {
+      const id = new Date().getTime().toString(36)
+
+      element.parentNode.id = id
+      return id
+    }
+  },
+  getChildNo (element) {
+    let no = 0
+    element.parentNode.childNodes.forEach((el, i) => {
+      if (el === element) {
+        no = i
+      }
+    })
+
+    return no
+  }
+}
+
 const redo = function () {
   execute(records[index], true)
 
@@ -77,18 +114,6 @@ const undo = function () {
 
   if (--index < 0) {
     index = 0
-  }
-}
-
-const caret = {
-  selection: window.getSelection(),
-  range:     document.createRange(),
-  set (element, info) {
-    const caretElement = info.id === element.id ? element : element.querySelector(`#${info.id}`)
-
-    this.range.setStart(caretElement.childNodes[info.childNo], info.offset)
-    this.selection.removeAllRanges()
-    this.selection.addRange(this.range)
   }
 }
 

@@ -55,7 +55,7 @@ const event = {
         .off('mouseup', event.horizontal.end)
         .enableSelection()
 
-      undo.save(undo.TYPES.RESIZE.X, element.tou[0], prop.width,
+      undo.save(undo.TYPES.RESIZE.X, element.tou.parent()[0], prop.width,
         parseInt(element.tou.attr('data-width')))
     }
   },
@@ -93,13 +93,13 @@ export default () => {
   element.bottom.on('mousedown', event.vertical.start)
 
   element.unfix.on('click', function () {
-    undo.save(undo.TYPES.RESIZE.Y, this, this.style.height, 'auto')
+    const $this = $(this.parentNode)
+    const $item = $('.tou-item', $this)
 
-    $(this)
-      .parent()
-      .removeClass('tou-fixed-height')
-      .find('.tou-item')
-      .height('auto')
+    undo.save(undo.TYPES.RESIZE.Y, $item[0], $item[0].style.height, 'auto')
+
+    $this.removeClass('tou-fixed-height')
+    $item.height('auto')
   })
 
   // apply all of .tou

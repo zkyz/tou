@@ -15,44 +15,26 @@ migrate()
 groupMigrate()
 
 ;(function () {
-  const selection = window.getSelection()
-
-  const isIgnore = function (e) {
-    return e.ctrlKey || e.metaKey || e.altKey
-  }
-
-  const setFocusId = function (element) {
-    if (element.parentNode.id) {
-      return element.parentNode.id
-    }
-    else {
-      const id = new Date().getTime().toString(36)
-
-      element.parentNode.id = id
-      return id
-    }
-  }
-
-  const getChildNo = function (element) {
-    let no = 0
-    element.parentNode.childNodes.forEach((el, i) => {
-      if (el === element) {
-        no = i
-      }
-    })
-
-    return no
-  }
-
   const save = function () {
-    undo.save(undo.TYPES.TEXT, undo.typing.element, {
-      caret: {
-        offset:  selection.focusOffset,
-        id:      setFocusId(selection.focusNode),
-        childNo: getChildNo(selection.focusNode)
-      },
-      value: undo.typing.element.innerHTML
-    })
+    const {TYPES, typing} = undo
+
+    // WARNING!
+    // get caret at before "element.innerHTML"
+    const afterCaret = undo.caret.get()
+
+    undo.save(TYPES.TEXT,
+      typing.element,
+      typing.before.value,
+      typing.element.innerHTML,
+      {
+        caret: {
+          before: typing.before.caret,
+          after: afterCaret
+        }
+      }
+    )
+
+    typing.before.value = null
   }
 
   $('.tou>.tou-text')
@@ -60,22 +42,29 @@ groupMigrate()
       $(this).removeAttr('contenteditable')
     })
     .on('dblclick', function () {
-      $(this)
-        .attr('contenteditable', true)
-        .focus()
+      const $this = $(this)
 
-      document.execCommand('selectAll')
-    })
-    .on('keydown', function (e) {
-      if (!isIgnore(e)) {
-        // when first touch then save before execute
-        if (undo.typing.element !== this) {
-          undo.typing.element = this
-          save()
-        }
+      if (!$this.is('[contenteditable]')) {
+        $this
+          .attr('contenteditable', true)
+          .focus()
 
-        clearTimeout(undo.typing.timer)
-        undo.typing.timer = setTimeout(save, 500)
+        document.execCommand('selectAll')
       }
+    })
+    .on('keydown', function () {
+      undo.typing.element = this
+
+      if (!undo.typing.before.value) {
+        // WARNING!
+        // do not change priority caret and value
+        undo.typing.before = {
+          caret: undo.caret.get(),
+          value: this.innerHTML
+        }
+      }
+
+      clearTimeout(undo.typing.timer)
+      undo.typing.timer = setTimeout(save, 500)
     })
 })()
