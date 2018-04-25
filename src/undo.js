@@ -2,7 +2,9 @@ const records = []
 let index = -1
 
 export function save (type, element, before, after, props) {
-  if (before === after) {
+  if (typeof (before) !== 'function' &&
+    before && after &&
+    before === after) {
     return
   }
 
@@ -48,6 +50,23 @@ const execute = function (record, redo) {
       element.parentNode.classList.remove('tou-fixed-height')
     }
     break
+  case TYPES.GROUP.COPY:
+    if (redo) value.before['after'](element)
+    else recyclebin(element)
+    break
+  case TYPES.GROUP.DELETE:
+    if (redo) recyclebin(element)
+    else {
+      if (value.before.length) value.before['after'](element)
+      else value.after['before'](element)
+    }
+    break
+  case TYPES.GROUP.MIGRATE:
+    const fn = value[redo ? 'after' : 'before']
+    const name = fn[0]
+
+    fn[1][name](element)
+    break
   }
 }
 
@@ -56,8 +75,21 @@ export const TYPES = {
   RESIZE: {
     X: 'RESIZE-X',
     Y: 'RESIZE-Y'
+  },
+  GROUP:  {
+    COPY:    'GROUP-COPY',
+    DELETE:  'GROUP-DELETE',
+    MIGRATE: 'GROUP-MIGRATE'
   }
 }
+export const recyclebin = (function () {
+  const trash = document.createElement('recyclebin')
+
+  return function (element) {
+    trash.appendChild(element.jquery ? element[0] : element)
+  }
+})()
+
 export const typing = {
   before: {}
 }

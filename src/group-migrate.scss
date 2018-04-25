@@ -24,4 +24,20 @@
     display: none;
     opacity: 0.5;
   }
+
+  &-assist {
+    position: absolute;
+    left: -30px;
+    top: 0;
+
+    &>a {
+      color: rgba(51, 102, 153, 0.3);
+      cursor: pointer;
+      display: block;
+
+      &:hover {
+        color: rgba(51, 102, 153, 1);
+      }
+    }
+  }
 }
